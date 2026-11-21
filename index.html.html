@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AkunSmart – Dashboard Akuntansi AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap">
+<style>
+:root{--bg:#eef3f1;--sf:#fff;--ink:#14231f;--mut:#5b6e68;--ln:#d3dfda;--ac:#0f6b5c;--acs:#dcefe9;--neg:#b3372f;--negs:#f7e0dd;--warn:#8a5a00;--warns:#fbefd0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a17;--sf:#16251f;--ink:#e6f0ec;--mut:#93a8a1;--ln:#2a3d36;--ac:#4cc3a9;--acs:#1c3a32;--neg:#ff8a80;--negs:#3a1f1c;--warn:#f2c14e;--warns:#3a2f12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a17;--sf:#16251f;--ink:#e6f0ec;--mut:#93a8a1;--ln:#2a3d36;--ac:#4cc3a9;--acs:#1c3a32;--neg:#ff8a80;--negs:#3a1f1c;--warn:#f2c14e;--warns:#3a2f12;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;margin:0}
+h1{font-size:28px}h2{font-size:20px;margin-bottom:10px}h3{font-size:16px;margin:16px 0 6px}
+.sub{color:var(--mut);margin:4px 0 16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+button,.btn{font:inherit;background:var(--ac);color:var(--sf);border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:500}
+button.ghost,.btn.ghost{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:2px solid var(--ln);margin-bottom:16px}
+.tabs button{background:none;color:var(--mut);border-radius:0;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--ac)}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:16px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:14px;border-left:4px solid var(--ac)}
+.kpi.n{border-left-color:var(--neg)}
+.kpi small{color:var(--mut)}.kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}
+th{color:var(--mut);font-weight:500;font-size:13px}
+td.r,th.r{text-align:right}
+tr.tot td{font-weight:600;border-top:2px solid var(--ink)}
+tr.flag td{background:var(--negs)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;align-items:end}
+label{display:block;font-size:13px;color:var(--mut)}
+input,select{width:100%;font:inherit;padding:7px 8px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--ink)}
+.ch{display:flex;gap:14px;align-items:flex-end;height:170px;padding-top:8px;overflow-x:auto}
+.m{flex:1;min-width:70px;text-align:center;font-size:12px;color:var(--mut)}
+.bars{display:flex;gap:4px;align-items:flex-end;height:140px;justify-content:center}
+.bars i{display:block;width:22px;border-radius:3px 3px 0 0;background:var(--ac)}
+.bars i.b{background:var(--neg)}
+.lg{font-size:13px;color:var(--mut);margin-top:6px}.lg span{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;background:var(--ac)}.lg span.b{background:var(--neg)}
+.ins{padding:10px 12px;border-radius:6px;margin:8px 0;background:var(--acs)}
+.ins.w{background:var(--warns)}.ins.n{background:var(--negs)}
+.chat{max-height:260px;overflow-y:auto;border:1px solid var(--ln);border-radius:6px;padding:10px;background:var(--bg);margin-bottom:8px}
+.q{text-align:right;color:var(--ac);margin:6px 0;font-weight:500}.a{margin:6px 0;white-space:pre-wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.chips button{padding:4px 10px;font-size:13px}
+.empty{text-align:center;padding:30px 10px;color:var(--mut)}
+.tg{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;background:var(--acs);color:var(--ac)}
+body{background:radial-gradient(900px 420px at 90% -8%,var(--acs),transparent 62%),var(--bg)}
+.hero{position:relative;display:flex;gap:18px;align-items:center;padding:28px 24px;border-radius:18px;margin-bottom:16px;color:#fff;background:#0f3d36 repeating-linear-gradient(0deg,transparent 0 31px,rgba(76,195,169,.16) 31px 32px);overflow:hidden;box-shadow:0 14px 34px -16px rgba(15,61,54,.7)}
+.hero:before{content:"";position:absolute;left:89px;top:0;bottom:0;width:2px;background:rgba(255,120,110,.55)}
+.hero>*{position:relative}
+.logo{flex:none;width:56px;height:56px;border-radius:14px;background:#4cc3a9;display:grid;place-items:center;font-size:28px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5)}
+.hero h1{color:#fff;font-size:36px;line-height:1.1}
+.hero p{margin:6px 0 10px;color:#b8d8d0}
+.tg2 span{display:inline-block;margin:2px 6px 2px 0;padding:3px 11px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12.5px}
+.bar button,.bar .btn{border-radius:999px;padding:9px 18px;box-shadow:0 4px 12px -6px rgba(15,107,92,.7)}
+.bar button.ghost,.bar .btn.ghost{box-shadow:none;background:var(--sf)}
+.tabs{gap:6px;padding:5px;background:var(--sf);border:1px solid var(--ln);border-radius:999px;margin-bottom:18px}
+.tabs button{border:0;margin:0;border-radius:999px;padding:8px 15px}
+.tabs button.on{background:var(--ac);color:var(--sf)}
+.card{border-radius:14px;box-shadow:0 1px 2px rgba(15,61,54,.06),0 10px 26px -16px rgba(15,61,54,.35)}
+.kpi{position:relative;border:1px solid var(--ln);border-radius:14px;padding:16px 14px 16px 66px;box-shadow:0 10px 26px -18px rgba(15,61,54,.4)}
+.kpi.n{border-left-color:var(--ln)}
+.kpi:before{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:var(--acs);font-size:20px}
+.kpi.n:before{background:var(--negs)}
+.kpis .kpi:nth-child(1):before{content:"📈"}.kpis .kpi:nth-child(2):before{content:"🧾"}.kpis .kpi:nth-child(3):before{content:"💎"}.kpis .kpi:nth-child(4):before{content:"🏦"}
+.kpi b{font-family:"Source Serif 4",Georgia,serif;font-size:22px}
+th{background:var(--acs);color:var(--ac);font-weight:600}
+tr:nth-child(even) td{background:rgba(15,107,92,.05)}
+tr:hover td{background:var(--acs)}
+tr.tot td{background:var(--acs)}
+tr.flag td{background:var(--negs)!important}
+.bars{border-bottom:2px solid var(--ln)}
+.bars i{width:26px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#4cc3a9,#0f6b5c)}
+.bars i.b{background:linear-gradient(180deg,#e5675d,#b3372f)}
+.ins{border-left:4px solid var(--ac);border-radius:8px;padding:12px 14px}
+.ins:before{content:"✓  ";font-weight:700;color:var(--ac)}
+.ins.w{border-left-color:var(--warn)}.ins.w:before{content:"!  ";color:var(--warn)}
+.ins.n{border-left-color:var(--neg)}.ins.n:before{content:"✕  ";color:var(--neg)}
+.q{display:table;margin:8px 0 8px auto;padding:6px 13px;border-radius:14px 14px 2px 14px;background:var(--ac);color:var(--sf)}
+.a{display:table;max-width:92%;padding:8px 13px;border-radius:14px 14px 14px 2px;background:var(--sf);border:1px solid var(--ln)}
+.empty{padding:44px 12px;font-size:16px}
+@media (max-width:560px){.hero{padding:18px 14px}.hero:before{display:none}.logo{width:44px;height:44px;font-size:22px}.hero h1{font-size:27px}}
+.deck{background:var(--sf);border:1px solid var(--ln);border-radius:16px;overflow:hidden;box-shadow:0 14px 34px -18px rgba(15,61,54,.5)}
+.sl{min-height:360px;padding:28px 32px;display:flex;flex-direction:column;gap:6px}
+.sl h2{font-size:26px;color:var(--ac);margin-bottom:8px}
+.sl ul{margin:0;padding-left:22px;font-size:17px}.sl li{margin:9px 0}
+.sl.cv{background:#0f3d36 repeating-linear-gradient(0deg,transparent 0 31px,rgba(76,195,169,.16) 31px 32px);color:#fff;justify-content:center}
+.sl.cv h1{color:#fff;font-size:48px}.sl.cv p{color:#b8d8d0;font-size:18px;margin:6px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.flow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+.flow>div{flex:1;min-width:130px;border:1.5px solid var(--ac);border-radius:10px;padding:12px;background:var(--bg);font-size:14px}
+.flow b{display:block;font-family:"Source Serif 4",Georgia,serif;font-size:16px;margin-bottom:4px;color:var(--ac)}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--ln);color:var(--mut)}
+.deck:fullscreen{display:flex;flex-direction:column;border-radius:0}.deck:fullscreen .sl{flex:1;font-size:1.25em;overflow:auto}
+@media (max-width:640px){.cols{grid-template-columns:1fr}.sl{padding:20px 16px}.sl.cv h1{font-size:36px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero"><div class="logo">📒</div><div><h1>AkunSmart</h1><p>Catat transaksi, lihat siklus akuntansi otomatis, dan tanya AI analis keuangan.</p><div class="tg2"><span>Jurnal otomatis</span><span>Laporan keuangan</span><span>Deteksi anomali</span><span>Prakiraan laba</span></div></div></div>
+<div class="bar">
+<button id="demo">Muat data contoh</button>
+<label class="btn ghost" style="margin:0;color:var(--ac)">Unggah CSV / Excel<input id="file" type="file" accept=".csv,.xlsx,.xls,text/csv" hidden></label>
+<button class="ghost" id="clr">Kosongkan</button>
+<span class="sub" style="margin:0;font-size:13px">Format CSV/Excel (baris pertama judul kolom): tanggal, keterangan, akun_debit, akun_kredit, jumlah</span>
+</div>
+<div class="tabs" id="tabs"></div>
+<div id="view"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+var S={e:[],tab:"ringkasan",chat:[]};
+var TABS=[["ringkasan","📊 Ringkasan"],["jurnal","📝 Jurnal Umum"],["buku","📚 Buku Besar"],["saldo","⚖️ Neraca Saldo"],["laporan","🧾 Laporan Keuangan"],["ai","🤖 Analis AI"],["presentasi","🎞️ Presentasi"]];
+var rp=function(n){return (n<0?"-":"")+"Rp "+Math.abs(Math.round(n)).toLocaleString("id-ID")};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+function tipe(a){a=a.toLowerCase();
+ if(/^(kas|bank|piutang|persediaan|peralatan|perlengkapan|kendaraan|gedung)/.test(a))return "Aset";
+ if(/^(utang|hutang)/.test(a))return "Kewajiban";
+ if(/^(modal|prive)/.test(a))return "Modal";
+ if(/^(pendapatan|penjualan)/.test(a))return "Pendapatan";
+ if(/^(beban|hpp|biaya)/.test(a))return "Beban";
+ return "Aset"}
+function dn(t){return t==="Aset"||t==="Beban"}
+var DEMO=[["2026-08-01","Setoran modal awal","Kas","Modal Pemilik",50000000],["2026-08-03","Beli peralatan","Peralatan","Kas",12000000],["2026-08-05","Beli persediaan kredit","Persediaan","Utang Usaha",8000000],["2026-08-10","Penjualan tunai","Kas","Pendapatan Penjualan",9500000],["2026-08-15","Bayar gaji","Beban Gaji","Kas",3000000],["2026-08-20","Bayar sewa","Beban Sewa","Kas",2000000],["2026-08-28","Bayar listrik","Beban Listrik","Kas",450000],["2026-09-02","Penjualan kredit","Piutang Usaha","Pendapatan Penjualan",11000000],["2026-09-09","Penjualan tunai","Kas","Pendapatan Penjualan",10500000],["2026-09-15","Bayar gaji","Beban Gaji","Kas",3000000],["2026-09-20","Bayar sewa","Beban Sewa","Kas",2000000],["2026-09-25","Bayar listrik","Beban Listrik","Kas",480000],["2026-09-30","Bayar utang usaha","Utang Usaha","Kas",4000000],["2026-10-04","Penjualan tunai","Kas","Pendapatan Penjualan",13000000],["2026-10-12","Terima pelunasan piutang","Kas","Piutang Usaha",6000000],["2026-10-15","Bayar gaji","Beban Gaji","Kas",3000000],["2026-10-20","Bayar sewa","Beban Sewa","Kas",2000000],["2026-10-27","Bayar listrik","Beban Listrik","Kas",4800000]].map(function(r){return {d:r[0],k:r[1],deb:r[2],kre:r[3],amt:r[4]}});
+function calc(){var acc={},t={Aset:0,Kewajiban:0,Modal:0,Pendapatan:0,Beban:0},mo={};
+ S.e.forEach(function(e){[[e.deb,1],[e.kre,-1]].forEach(function(p){var a=acc[p[0]]||(acc[p[0]]={n:p[0],ty:tipe(p[0]),D:0,C:0});if(p[1]>0)a.D+=e.amt;else a.C+=e.amt});
+  var m=e.d.slice(0,7);mo[m]=mo[m]||{p:0,b:0};
+  if(tipe(e.kre)==="Pendapatan")mo[m].p+=e.amt;if(tipe(e.deb)==="Pendapatan")mo[m].p-=e.amt;
+  if(tipe(e.deb)==="Beban")mo[m].b+=e.amt;if(tipe(e.kre)==="Beban")mo[m].b-=e.amt});
+ Object.keys(acc).forEach(function(k){var a=acc[k];a.s=dn(a.ty)?a.D-a.C:a.C-a.D;t[a.ty]+=a.s});
+ var lancar=0;Object.keys(acc).forEach(function(k){if(/^(kas|bank|piutang|persediaan)/i.test(k))lancar+=acc[k].s});
+ var laba=t.Pendapatan-t.Beban;
+ return {acc:acc,t:t,mo:mo,laba:laba,lancar:lancar,ekuitas:t.Modal+laba}}
+function anomalies(){var a=S.e.map(function(e){return e.amt});if(a.length<4)return [];
+ var mu=a.reduce(function(x,y){return x+y},0)/a.length,sd=Math.sqrt(a.reduce(function(x,y){return x+(y-mu)*(y-mu)},0)/a.length)||1,out=[],seen={};
+ S.e.forEach(function(e,i){var why=[],z=(e.amt-mu)/sd;if(Math.abs(z)>2)why.push("nominal tidak wajar (Z-score "+z.toFixed(1)+")");
+  var key=e.d+e.k+e.amt;if(seen[key])why.push("kemungkinan duplikat");seen[key]=1;
+  if(e.deb===e.kre)why.push("akun debit dan kredit sama");
+  if(why.length)out.push({i:i,e:e,why:why.join(", ")})});
+ // anomali per akun beban: lonjakan > 3x rata-rata akun yang sama
+ var by={};S.e.forEach(function(e,i){if(tipe(e.deb)==="Beban"){(by[e.deb]=by[e.deb]||[]).push(i)}});
+ Object.keys(by).forEach(function(k){var ix=by[k];if(ix.length<3)return;var avg=ix.reduce(function(s,i){return s+S.e[i].amt},0)/ix.length;
+  ix.forEach(function(i){if(S.e[i].amt>avg*2&&!out.some(function(o){return o.i===i}))out.push({i:i,e:S.e[i],why:k+" jauh di atas rata-rata akunnya ("+rp(avg)+")"})})});
+ return out}
+function forecast(c){var ks=Object.keys(c.mo).sort();if(ks.length<2)return null;
+ var y=ks.map(function(k){return c.mo[k].p-c.mo[k].b}),n=y.length,sx=0,sy=0,sxy=0,sxx=0;
+ y.forEach(function(v,i){sx+=i;sy+=v;sxy+=i*v;sxx+=i*i});var d=n*sxx-sx*sx||1,b=(n*sxy-sx*sy)/d,a=(sy-b*sx)/n;
+ return {v:a+b*n,slope:b}}
+function insights(c){var o=[],pend=c.t.Pendapatan;
+ if(!S.e.length)return o;
+ if(!isFinite(c.t.Aset-(c.t.Kewajiban+c.ekuitas))||Math.abs(c.t.Aset-(c.t.Kewajiban+c.ekuitas))>1)o.push(["n","Persamaan akuntansi tidak seimbang. Periksa jurnal."]);
+ else o.push(["","Persamaan akuntansi seimbang: Aset "+rp(c.t.Aset)+" = Kewajiban "+rp(c.t.Kewajiban)+" + Ekuitas "+rp(c.ekuitas)+"."]);
+ if(pend>0){var nm=c.laba/pend*100;o.push([nm<10?"w":"","Margin laba bersih "+nm.toFixed(1)+"%. "+(nm<10?"Margin tipis, tinjau beban terbesar.":"Margin sehat.")])}
+ if(c.t.Kewajiban>0){var cr=c.lancar/c.t.Kewajiban;o.push([cr<1?"n":"","Rasio lancar "+cr.toFixed(2)+". "+(cr<1?"Aset lancar tidak cukup menutup utang jangka pendek.":"Likuiditas aman (di atas 1).")])}
+ var bb=Object.values(c.acc).filter(function(a){return a.ty==="Beban"}).sort(function(a,b){return b.s-a.s})[0];
+ if(bb&&c.t.Beban>0)o.push(["","Beban terbesar: "+bb.n+" ("+rp(bb.s)+", "+(bb.s/c.t.Beban*100).toFixed(0)+"% dari total beban)."]);
+ var f=forecast(c);if(f)o.push([f.v<0?"n":"","Prakiraan laba bulan depan sekitar "+rp(f.v)+" (tren "+(f.slope>=0?"naik":"turun")+" "+rp(Math.abs(f.slope))+" per bulan)."]);
+ anomalies().forEach(function(x){o.push(["w","Transaksi janggal: \""+x.e.k+"\" "+rp(x.e.amt)+" pada "+x.e.d+" – "+x.why+"."])});
+ return o}
+function answer(q){var c=calc(),s=q.toLowerCase();if(!S.e.length)return "Belum ada data. Muat data contoh atau unggah CSV dulu.";
+ if(/laba|untung|rugi/.test(s))return "Laba bersih: "+rp(c.laba)+" (pendapatan "+rp(c.t.Pendapatan)+" dikurangi beban "+rp(c.t.Beban)+").";
+ if(/kas/.test(s)){var k=c.acc["Kas"];return k?"Saldo kas saat ini "+rp(k.s)+". Kas masuk "+rp(k.D)+", kas keluar "+rp(k.C)+".":"Tidak ada akun Kas."}
+ if(/rasio|likuid/.test(s))return "Rasio lancar "+(c.t.Kewajiban?(c.lancar/c.t.Kewajiban).toFixed(2):"tak terhingga")+". Margin laba "+(c.t.Pendapatan?(c.laba/c.t.Pendapatan*100).toFixed(1):0)+"%. Utang terhadap ekuitas "+(c.ekuitas?(c.t.Kewajiban/c.ekuitas).toFixed(2):"-")+".";
+ if(/anomali|aneh|janggal/.test(s)){var a=anomalies();return a.length?a.map(function(x){return "• "+x.e.k+" "+rp(x.e.amt)+" ("+x.why+")"}).join("\n"):"Tidak ada transaksi janggal terdeteksi."}
+ if(/prediksi|forecast|depan/.test(s)){var f=forecast(c);return f?"Prakiraan laba bulan depan sekitar "+rp(f.v)+".":"Butuh data minimal 2 bulan."}
+ if(/beban|biaya/.test(s)){return Object.values(c.acc).filter(function(a){return a.ty==="Beban"}).sort(function(a,b){return b.s-a.s}).map(function(a){return "• "+a.n+": "+rp(a.s)}).join("\n")}
+ if(/saran|rekomendasi/.test(s)){return insights(c).map(function(i){return "• "+i[1]}).join("\n")}
+ return "Coba tanya: laba bersih, saldo kas, rasio keuangan, transaksi janggal, prediksi, beban, atau saran."}
+function tbl(h,rows,rc){return '<div class="scroll"><table><tr>'+h.map(function(x,i){return '<th'+(rc&&rc.indexOf(i)>=0?' class="r"':'')+'>'+x+'</th>'}).join("")+'</tr>'+rows.join("")+'</table></div>'}
+function view(){var c=calc(),v=document.getElementById("view"),h="";
+ if(!S.e.length&&S.tab!=="jurnal"&&S.tab!=="presentasi"){v.innerHTML='<div class="card empty"><h2>Belum ada transaksi</h2>Klik “Muat data contoh”, unggah file CSV, atau catat jurnal di tab Jurnal Umum.</div>';return}
+ if(S.tab==="ringkasan"){var ks=Object.keys(c.mo).sort(),mx=Math.max.apply(null,ks.map(function(k){return Math.max(c.mo[k].p,c.mo[k].b)}).concat([1])),f=forecast(c);
+  h='<div class="kpis"><div class="kpi"><small>Pendapatan</small><b>'+rp(c.t.Pendapatan)+'</b></div><div class="kpi n"><small>Beban</small><b>'+rp(c.t.Beban)+'</b></div><div class="kpi'+(c.laba<0?' n':'')+'"><small>Laba bersih</small><b>'+rp(c.laba)+'</b></div><div class="kpi"><small>Total aset</small><b>'+rp(c.t.Aset)+'</b></div></div>'+
+  '<div class="card"><h2>Pendapatan dan beban per bulan</h2><div class="ch">'+ks.map(function(k){var m=c.mo[k];return '<div class="m"><div class="bars"><i style="height:'+(m.p/mx*100)+'%" title="Pendapatan '+rp(m.p)+'"></i><i class="b" style="height:'+(m.b/mx*100)+'%" title="Beban '+rp(m.b)+'"></i></div>'+k+'</div>'}).join("")+'</div><div class="lg"><span></span>Pendapatan<span class="b"></span>Beban'+(f?' &nbsp; Prakiraan laba bulan depan: <b>'+rp(f.v)+'</b>':'')+'</div></div>'+
+  '<div class="card"><h2>Insight otomatis</h2>'+insights(c).map(function(i){return '<div class="ins '+i[0]+'">'+esc(i[1])+'</div>'}).join("")+'</div>'}
+ if(S.tab==="jurnal"){var names=Object.keys(c.acc).sort();
+  h='<div class="card"><h2>Catat transaksi</h2><div class="row"><div><label>Tanggal</label><input id="fd" type="date"></div><div><label>Keterangan</label><input id="fk"></div><div><label>Akun debit</label><input id="fb" list="al"></div><div><label>Akun kredit</label><input id="fc" list="al"></div><div><label>Jumlah (Rp)</label><input id="fa" type="number" min="0"></div><div><button id="add">Tambah jurnal</button></div></div><datalist id="al">'+["Kas","Bank","Piutang Usaha","Persediaan","Peralatan","Utang Usaha","Modal Pemilik","Pendapatan Penjualan","Pendapatan Jasa","Beban Gaji","Beban Sewa","Beban Listrik","HPP"].concat(names).map(function(n){return '<option value="'+esc(n)+'">'}).join("")+'</datalist><p class="lg" id="ferr"></p></div>'+
+  '<div class="card"><h2>Jurnal umum</h2>'+(S.e.length?tbl(["Tanggal","Keterangan","Akun","Debit","Kredit",""],S.e.slice().map(function(e,i){return [e,i]}).sort(function(a,b){return a[0].d<b[0].d?-1:1}).map(function(p){var e=p[0];return '<tr><td>'+esc(e.d)+'</td><td>'+esc(e.k)+'</td><td>'+esc(e.deb)+'<br><span style="padding-left:18px;color:var(--mut)">'+esc(e.kre)+'</span></td><td class="r">'+rp(e.amt)+'</td><td class="r"><br>'+rp(e.amt)+'</td><td><button class="ghost" data-del="'+p[1]+'" style="padding:2px 8px">Hapus</button></td></tr>'}),[3,4]):'<div class="empty">Belum ada jurnal.</div>')+'</div>'}
+ if(S.tab==="buku"){h=Object.keys(c.acc).sort().map(function(n){var a=c.acc[n],run=0,rows=[];S.e.slice().sort(function(x,y){return x.d<y.d?-1:1}).forEach(function(e){var d=e.deb===n,k=e.kre===n;if(!d&&!k)return;var sg=dn(a.ty)?(d?1:-1):(d?-1:1);run+=sg*e.amt;rows.push('<tr><td>'+esc(e.d)+'</td><td>'+esc(e.k)+'</td><td class="r">'+(d?rp(e.amt):'')+'</td><td class="r">'+(k?rp(e.amt):'')+'</td><td class="r">'+rp(run)+'</td></tr>')});
+  return '<div class="card"><h3>'+esc(n)+' <span class="tg">'+a.ty+'</span></h3>'+tbl(["Tanggal","Keterangan","Debit","Kredit","Saldo"],rows,[2,3,4])+'</div>'}).join("")}
+ if(S.tab==="saldo"){var td=0,tk=0,rows=Object.keys(c.acc).sort(function(a,b){return ["Aset","Kewajiban","Modal","Pendapatan","Beban"].indexOf(c.acc[a].ty)-["Aset","Kewajiban","Modal","Pendapatan","Beban"].indexOf(c.acc[b].ty)}).map(function(n){var a=c.acc[n],net=a.D-a.C,d=net>=0?net:0,k=net<0?-net:0;td+=d;tk+=k;return '<tr><td>'+esc(n)+'</td><td><span class="tg">'+a.ty+'</span></td><td class="r">'+(d?rp(d):'')+'</td><td class="r">'+(k?rp(k):'')+'</td></tr>'});
+  rows.push('<tr class="tot"><td colspan="2">Total</td><td class="r">'+rp(td)+'</td><td class="r">'+rp(tk)+'</td></tr>');
+  h='<div class="card"><h2>Neraca saldo</h2>'+tbl(["Akun","Jenis","Debit","Kredit"],rows,[2,3])+'<div class="ins '+(Math.abs(td-tk)<1?'':'n')+'">'+(Math.abs(td-tk)<1?'Seimbang: total debit sama dengan total kredit.':'Tidak seimbang, selisih '+rp(td-tk)+'.')+'</div></div>'}
+ if(S.tab==="laporan"){var L=function(ty){return Object.values(c.acc).filter(function(a){return a.ty===ty}).map(function(a){return '<tr><td>'+esc(a.n)+'</td><td class="r">'+rp(a.s)+'</td></tr>'})};
+  h='<div class="card"><h2>Laporan laba rugi</h2><div class="scroll"><table><tr><th colspan="2">Pendapatan</th></tr>'+L("Pendapatan").join("")+'<tr class="tot"><td>Total pendapatan</td><td class="r">'+rp(c.t.Pendapatan)+'</td></tr><tr><th colspan="2">Beban</th></tr>'+L("Beban").join("")+'<tr class="tot"><td>Total beban</td><td class="r">'+rp(c.t.Beban)+'</td></tr><tr class="tot"><td>Laba (rugi) bersih</td><td class="r">'+rp(c.laba)+'</td></tr></table></div></div>'+
+  '<div class="card"><h2>Laporan posisi keuangan (neraca)</h2><div class="scroll"><table><tr><th colspan="2">Aset</th></tr>'+L("Aset").join("")+'<tr class="tot"><td>Total aset</td><td class="r">'+rp(c.t.Aset)+'</td></tr><tr><th colspan="2">Kewajiban</th></tr>'+L("Kewajiban").join("")+'<tr><th colspan="2">Ekuitas</th></tr>'+L("Modal").join("")+'<tr><td>Laba berjalan</td><td class="r">'+rp(c.laba)+'</td></tr><tr class="tot"><td>Total kewajiban dan ekuitas</td><td class="r">'+rp(c.t.Kewajiban+c.ekuitas)+'</td></tr></table></div></div>'}
+ if(S.tab==="ai"){var an=anomalies();
+  h='<div class="card"><h2>Transaksi janggal</h2>'+(an.length?tbl(["Tanggal","Keterangan","Jumlah","Alasan"],an.map(function(x){return '<tr class="flag"><td>'+esc(x.e.d)+'</td><td>'+esc(x.e.k)+'</td><td class="r">'+rp(x.e.amt)+'</td><td>'+esc(x.why)+'</td></tr>'}),[2]):'<div class="ins">Tidak ada transaksi janggal terdeteksi.</div>')+'</div>'+
+  '<div class="card"><h2>Tanya AI analis keuangan</h2><div class="chips">'+["Berapa laba bersih?","Saldo kas?","Bagaimana rasio keuangan?","Ada transaksi janggal?","Prediksi bulan depan","Beri saran"].map(function(q){return '<button class="ghost" data-q="'+q+'">'+q+'</button>'}).join("")+'</div><div class="chat" id="chat">'+(S.chat.length?S.chat.map(function(m){return '<div class="'+m[0]+'">'+esc(m[1])+'</div>'}).join(""):'<div class="a" style="color:var(--mut)">Pilih pertanyaan di atas atau ketik sendiri.</div>')+'</div><div class="row" style="grid-template-columns:1fr auto"><input id="qi" placeholder="Tulis pertanyaan"><button id="qs">Kirim</button></div></div>'}
+ if(S.tab==="presentasi")h=deck();v.innerHTML=h;bind();if(S.tab==="presentasi")deckBind()}
+function ask(q){if(!q.trim())return;S.chat.push(["q",q],["a",answer(q)]);view();var ch=document.getElementById("chat");if(ch)ch.scrollTop=ch.scrollHeight}
+function bind(){var g=function(i){return document.getElementById(i)};
+ if(g("add"))g("add").onclick=function(){var d=g("fd").value,k=g("fk").value.trim(),b=g("fb").value.trim(),c=g("fc").value.trim(),a=parseFloat(g("fa").value);
+  if(!d||!k||!b||!c||!(a>0)){g("ferr").textContent="Lengkapi semua kolom dan isi jumlah lebih dari 0.";return}
+  S.e.push({d:d,k:k,deb:b,kre:c,amt:a});view()};
+ document.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){S.e.splice(+b.dataset.del,1);view()}});
+ document.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){ask(b.dataset.q)}});
+ if(g("qs")){g("qs").onclick=function(){ask(g("qi").value)};g("qi").onkeydown=function(e){if(e.key==="Enter")ask(g("qi").value)}}}
+function tabs(){var t=document.getElementById("tabs");t.innerHTML=TABS.map(function(x){return '<button data-t="'+x[0]+'" class="'+(S.tab===x[0]?"on":"")+'">'+x[1]+'</button>'}).join("");
+ t.querySelectorAll("button").forEach(function(b){b.onclick=function(){S.tab=b.dataset.t;tabs();view()}})}
+document.getElementById("demo").onclick=function(){S.e=DEMO.slice();S.tab="ringkasan";tabs();view()};
+document.getElementById("clr").onclick=function(){S.e=[];S.chat=[];view()};
+document.getElementById("file").onchange=function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){
+ var L=String(r.result).split(/\r?\n/).filter(function(x){return x.trim()}),sep=L[0].indexOf(";")>=0?";":",",out=[];
+ L.slice(1).forEach(function(l){var p=l.split(sep).map(function(x){return x.trim().replace(/^"|"$/g,"")}),a=parseFloat(p[4].replace(/[^0-9.-]/g,""));if(p.length>=5&&a>0)out.push({d:p[0].slice(0,10),k:p[1],deb:p[2],kre:p[3],amt:a})});
+ if(!out.length){alert("CSV tidak terbaca. Pastikan kolomnya: tanggal, keterangan, akun_debit, akun_kredit, jumlah.");return}
+ S.e=out;S.tab="ringkasan";tabs();view()};r.readAsText(f)};
+var P=0;
+function ul(a){return '<ul>'+a.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'}
+function cl(a,b){return '<div class="cols"><div><h3>'+a[0]+'</h3>'+ul(a[1])+'</div><div><h3>'+b[0]+'</h3>'+ul(b[1])+'</div></div>'}
+function fl(a){return '<div class="flow">'+a.map(function(x){return '<div><b>'+x[0]+'</b>'+x[1]+'</div>'}).join('')+'</div>'}
+function tb(h,r,rc,tot){return tbl(h,r.map(function(x,i){return '<tr'+(tot&&i===r.length-1?' class="tot"':'')+'>'+x.map(function(c,j){return '<td'+(rc.indexOf(j)>=0?' class="r"':'')+'>'+c+'</td>'}).join('')+'</tr>'}),rc)}
+function brs(){var d=[['Agustus',9.5,5.45],['September',21.5,5.48],['Oktober',13,9.8]];return '<div class="ch" style="height:190px">'+d.map(function(m){return '<div class="m"><div class="bars" style="height:150px"><i style="height:'+m[1]/21.5*100+'%"></i><i class="b" style="height:'+m[2]/21.5*100+'%"></i></div>'+m[0]+'<br>'+m[1]+' | '+m[2]+'</div>'}).join('')+'</div><div class="lg"><span></span>Pendapatan (juta Rp)<span class="b"></span>Beban (juta Rp)</div>'}
+var SL=[
+['', '<h1>AkunSmart</h1><p>Dashboard akuntansi berbasis AI: dari jurnal sampai laporan keuangan, otomatis.</p><p>Disusun oleh:<br>Muhammad Faris Ghifari (5304221516)<br>Azlansyah (5304230015)</p><p>Mata kuliah: Teknologi Audit</p>'],
+['Latar belakang',ul(['Pencatatan akuntansi manual rawan salah hitung dan memakan waktu.','Banyak pelaku usaha kecil punya data transaksi, tetapi sulit membaca kondisi keuangannya.','Laporan keuangan sering baru disusun setelah masalah muncul.','Dibutuhkan alat yang mencatat, menghitung, dan menjelaskan hasilnya dengan bahasa sederhana.'])],
+['Rumusan masalah dan batasan',cl(['Rumusan masalah',['Bagaimana mengotomatiskan siklus akuntansi dari jurnal sampai laporan keuangan?','Bagaimana AI membantu mendeteksi transaksi janggal dan menjelaskan kondisi keuangan?']],['Batasan',['Data masuk lewat CSV, Excel, atau input manual.','Jenis akun dikenali dari awalan nama akun.','Analis AI berbasis aturan statistik, belum memakai LLM.','Data tidak disimpan setelah halaman ditutup.']])],
+['Tujuan dan manfaat',cl(['Tujuan',['Menyusun laporan keuangan otomatis dari data transaksi.','Memeriksa keseimbangan debit dan kredit.','Memberi insight dan peringatan dini.']],['Manfaat',['Pelaku usaha kecil dapat membaca kondisi keuangan tanpa keahlian akuntansi.','Mahasiswa dapat melihat hubungan antar tahap siklus akuntansi.','Mengurangi salah hitung dan waktu pembukuan.']])],
+['Alur siklus akuntansi di AkunSmart',fl([['Jurnal umum','Input manual atau unggah CSV/Excel'],['Buku besar','Saldo berjalan tiap akun'],['Neraca saldo','Cek debit = kredit'],['Laba rugi','Pendapatan dikurangi beban'],['Neraca','Aset = Kewajiban + Ekuitas']])+'<p class="lg">Semua tahap dihitung ulang otomatis setiap ada transaksi baru.</p>'],
+['Alur data dalam aplikasi',fl([['Input','CSV, Excel, atau form jurnal'],['Pembaca data','Memisahkan kolom dan memvalidasi jumlah'],['Klasifikasi akun','Menentukan jenis akun dari nama'],['Mesin hitung','Debit, kredit, saldo, dan total'],['Output','Laporan, grafik, dan analis AI']])+'<p class="lg">Semua proses berjalan di browser; data tidak dikirim ke server.</p>'],
+['Klasifikasi akun dan persamaan akuntansi',tb(['Jenis','Contoh akun','Saldo normal','Tampil di'],[['Aset','Kas, Piutang, Persediaan, Peralatan','Debit','Neraca'],['Kewajiban','Utang Usaha','Kredit','Neraca'],['Modal','Modal Pemilik','Kredit','Neraca'],['Pendapatan','Pendapatan Penjualan','Kredit','Laba rugi'],['Beban','Beban Gaji, Sewa, Listrik','Debit','Laba rugi']],[])+'<p><b>Aset = Kewajiban + Modal + (Pendapatan - Beban)</b></p>'],
+['Fitur analis AI',fl([['Deteksi anomali','Z-score, transaksi duplikat, dan lonjakan beban dibanding rata-rata akunnya.'],['Prakiraan','Regresi linear atas laba bulanan untuk memperkirakan bulan depan.'],['Insight otomatis','Rasio lancar, margin laba, dan beban terbesar dijelaskan dengan kalimat.'],['Chat analis','Tanya laba, kas, rasio, atau saran; jawaban dihitung dari data.']])],
+['Metode analisis',tb(['Metode','Cara kerja','Dipakai untuk'],[['Z-score','(nominal - rata-rata) / simpangan baku; ditandai jika |Z| > 2','Nominal tidak wajar'],['Lonjakan beban','Nominal lebih dari 2x rata-rata akun beban yang sama (min. 3 transaksi)','Kenaikan mendadak'],['Duplikat','Tanggal, keterangan, dan nominal sama','Input ganda'],['Regresi linear','Garis tren laba bulanan, diproyeksikan satu bulan','Prakiraan laba'],['Rasio keuangan','Rasio lancar, margin laba, utang terhadap ekuitas','Kesehatan keuangan']],[])],
+['Studi kasus: neraca saldo data contoh',tb(['Akun','Jenis','Debit (Rp)','Kredit (Rp)'],[['Kas','Aset','52.270.000',''],['Piutang Usaha','Aset','5.000.000',''],['Persediaan','Aset','8.000.000',''],['Peralatan','Aset','12.000.000',''],['Utang Usaha','Kewajiban','','4.000.000'],['Modal Pemilik','Modal','','50.000.000'],['Pendapatan Penjualan','Pendapatan','','44.000.000'],['Beban Gaji','Beban','9.000.000',''],['Beban Sewa','Beban','6.000.000',''],['Beban Listrik','Beban','5.730.000',''],['Total','','98.000.000','98.000.000']],[2,3],1)+'<p class="lg">18 jurnal, Agustus sampai Oktober 2026. Debit sama dengan kredit: seimbang.</p>'],
+['Hasil: laporan keuangan','<div class="cols"><div>'+tb(['Laba rugi','Rp'],[['Pendapatan penjualan','44.000.000'],['Beban gaji','9.000.000'],['Beban sewa','6.000.000'],['Beban listrik','5.730.000'],['Total beban','20.730.000'],['Laba bersih','23.270.000']],[1],1)+'</div><div>'+tb(['Neraca','Rp'],[['Kas','52.270.000'],['Piutang usaha','5.000.000'],['Persediaan','8.000.000'],['Peralatan','12.000.000'],['Total aset','77.270.000'],['Utang usaha','4.000.000'],['Modal pemilik','50.000.000'],['Laba berjalan','23.270.000'],['Kewajiban + ekuitas','77.270.000']],[1],1)+'</div></div>'],
+['Hasil: analisis AI','<div class="cols"><div>'+brs()+'</div><div><h3>Rasio dan prakiraan</h3><p>Rasio lancar 16,3; margin laba 52,9%. Prakiraan laba bulan depan sekitar Rp6,9 juta (tren turun).</p><h3>Transaksi ditandai (2)</h3><p>Beban listrik Oktober Rp4,8 juta: lebih dari 2x rata-rata akun listrik (Rp1,91 juta); bulan sebelumnya hanya sekitar Rp0,5 juta.</p><p>Setoran modal awal Rp50 juta: Z-score 3,8, wajar tetapi nominalnya besar.</p></div></div>'],
+['Pengujian',tb(['Skenario uji','Hasil yang diharapkan'],[['Muat data contoh','18 jurnal terbaca'],['Neraca saldo','Debit = kredit = Rp98.000.000'],['Persamaan akuntansi','Aset 77,27 juta = Kewajiban 4 juta + Ekuitas 73,27 juta'],['Deteksi anomali','2 transaksi ditandai (listrik Oktober, modal awal)'],['Chat: berapa laba bersih','Rp23.270.000']],[])],
+['Kesimpulan dan pengembangan',ul(['AkunSmart menghubungkan konsep akuntansi dasar dengan analisis otomatis dalam satu aplikasi web.','Pengembangan berikutnya: integrasi LLM (misalnya Groq) untuk komentar yang lebih natural.','Penyimpanan data ke database dan dukungan banyak pengguna.','Format laporan yang bisa diunduh (PDF/Excel).'])]
+];
+function deck(){return '<div class="deck" id="deck"><div class="sl'+(P===0?' cv':'')+'">'+(P?'<h2>'+SL[P][0]+'</h2>':'')+SL[P][1]+'</div><div class="nav"><button class="ghost" id="dp">Sebelumnya</button><span>'+(P+1)+' / '+SL.length+'</span><span><button class="ghost" id="df">Layar penuh</button> <button id="dn">Berikutnya</button></span></div></div>'}
+function go(d){P=Math.min(SL.length-1,Math.max(0,P+d));view()}
+function deckBind(){var g=function(i){return document.getElementById(i)};g("dp").onclick=function(){go(-1)};g("dn").onclick=function(){go(1)};g("df").onclick=function(){var d=g("deck");if(d.requestFullscreen)d.requestFullscreen()}}
+document.addEventListener("keydown",function(e){if(S.tab!=="presentasi")return;if(e.key==="ArrowRight")go(1);if(e.key==="ArrowLeft")go(-1)});
+(function(){var inp=document.getElementById("file"),csvH=inp.onchange;
+ inp.onchange=function(ev){var f=ev.target.files[0];if(!f)return;
+  if(!/\.xlsx?$/i.test(f.name)){csvH(ev);return}
+  if(typeof XLSX==="undefined"){alert("Pustaka Excel gagal dimuat. Coba unggah CSV.");return}
+  var r=new FileReader();r.onload=function(){try{var wb=XLSX.read(r.result,{type:"array",cellDates:true}),ws=wb.Sheets[wb.SheetNames[0]],csv=XLSX.utils.sheet_to_csv(ws,{FS:";",dateNF:"yyyy-mm-dd",rawNumbers:true});
+   csvH({target:{files:[new File([csv],"data.csv",{type:"text/csv"})]}})}catch(e){alert("File Excel tidak terbaca.")}};r.readAsArrayBuffer(f)}})();
+tabs();view();
+</script>
+</body>
+</html>
